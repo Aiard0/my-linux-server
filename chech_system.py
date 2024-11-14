@@ -23,3 +23,6 @@ pprint(os_release)
 
 # Imprime apenas o ID da distribuição Linux
 print("ID da distribuição Linux:", os_release.get("ID"))
+
+if os_release.get("ID") == "rocky":
+    print("O sistema operacional é o Rocky Linux!")
