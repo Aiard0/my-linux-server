@@ -1,7 +1,9 @@
-# Version 1.0.0
+# Version 1.0.1
 
 import pathlib
 import subprocess
+import os
+import getpass
 
 erros = 0
 
@@ -116,16 +118,22 @@ def install_packages(packages):
                 erros += 1
 
 def enable_services():
+    user = getpass.getuser()
     print(TGREEN + f"[S.I.S - Server Installer Script] Ativando os serviços...")
     subprocess.run(["sudo", "systemctl", "enable", "--now", "cockpit.socket"], check=True)
     subprocess.run(["sudo", "systemctl", "enable", "--now", "nginx"], check=True)
     subprocess.run(["sudo", "systemctl", "enable", "--now", "mariadb"], check=True)
     if docker_choice == "s" or docker_choice == "S":
         subprocess.run(["sudo", "systemctl", "enable", "--now", "docker"], check=True)
+        docker_user_choice = input("[S.I.S - Server Installer Script] Deseja adicionar o usuário atual ao grupo Docker? (s/n): ")
+        if docker_user_choice == "s" or docker_user_choice == "S":
+            print(TGREEN + f"[S.I.S - Server Installer Script] Adicionando o usuário '{user}' atual ao grupo Docker...")
+            subprocess.run(["sudo", "usermod", "-aG", "docker", user], check=True)
     print(TGREEN + f"[S.I.S - Server Installer Script] Serviços ativados com sucesso!")
 
 # Run the installation function
 if __name__ == "__main__":
+    os.system("clear")
     print(TGREEN + f"[S.I.S - Server Installer Script] Iniciando a instalação...")
     install_packages(packages)
     enable_services()
